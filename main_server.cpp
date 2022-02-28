@@ -15,8 +15,6 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 
-using namespace std;
-
 int main(int argc, char *argv[]) {
   int server_sockfd;  //服务器端套接字
   int client_sockfd;  //客户端套接字
