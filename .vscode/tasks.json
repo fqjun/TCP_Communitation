@@ -1,27 +1,35 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "type": "shell",
-      "label": "build", //任务的名字，就是刚才在命令面板中选择的时候所看到的，可以自己设置
-      "command": "g++",
-      "args": [
-        //编译时候的参数
-        "-g", //添加gdb调试选项
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "build",
+			"command": "g++",
+			"args": [
+				"-std=c++11",
+				"-static-libgcc", // 静态链接
+				"-Wall", // 开启额外警告
+
+
+				"-I","${workspaceFolder}/",
+
+				"-g",
         "${file}",
-        "-o", //指定生成可执行文件的名称
-        "${workspaceFolder}\\bin\\run.o",
-        "-lwsock32"
-      ],
-      "options": {
-        "cwd": "D:\\Mingw\\bin"
-      },
-      "problemMatcher": ["$gcc"],
-      "group": {
-        "kind": "build",
-        "isDefault": true //表示快捷键Ctrl+Shift+B可以运行该任务
-      },
-      "detail": "编译器: D:\\Mingw\\bin\\g++.exe"
-    }
-  ]
+
+				"-o",
+				"${workspaceFolder}/bin/run.o",//输出的文件名称以及路径
+
+			],
+			"options": {
+				"cwd": "/usr/bin"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
 }
