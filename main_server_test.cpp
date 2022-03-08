@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <unp.h>
 
 #define BUF_SIZE 3
 
@@ -17,8 +18,10 @@ int main(int argc, char **argv) {
 
   // int yes = 1;
   // //设置socket的属性，socket关闭后立即收回 用以加强程序的健壮性
-  // if (setsockopt(servSock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1 ||
-  //     setsockopt(servSock, SOL_SOCKET, SO_KEEPALIVE, &yes, sizeof(int)) == -1) {
+  // if (setsockopt(servSock, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1
+  // ||
+  //     setsockopt(servSock, SOL_SOCKET, SO_KEEPALIVE, &yes, sizeof(int)) ==
+  //     -1) {
   //   perror("setsockopt error!");
   //   return 0;
   // }
@@ -46,10 +49,14 @@ int main(int argc, char **argv) {
     // tcflush(clntSock, );
     if ((clntSock = accept(servSock, (struct sockaddr *)&clntAddr, &nSize)) <
         0) {
-      perror("accept error");
-      close(clntSock);
-      memset(buffer, 0, BUF_SIZE);
-      break;
+      if (errno == EINTR) {
+        continue;
+      } else {
+        perror("accept error");
+        close(clntSock);
+        memset(buffer, 0, BUF_SIZE);
+        break;
+      }
     }
     // int clntSock = accept(servSock,(struct sockaddr*)&clntAddr, &nSize);
     printf("accept completed\n");
@@ -58,8 +65,8 @@ int main(int argc, char **argv) {
     printf("Message from client:%s\n", buffer);
     send(clntSock, buffer, strLen, 0);
 
-    close(clntSock);
     memset(buffer, 0, BUF_SIZE);
+    close(clntSock);
     printf("---------%d----------\n", num);
     ++num;
   }
