@@ -10,7 +10,7 @@
           "type": "cppdbg",
           "request": "launch",
           "program": "${workspaceFolder}/bin/run.o", /*选择要调试的文件路径*/
-          "args": [],
+          "args": ["5699"],
           "stopAtEntry": false,
           "cwd": "${workspaceFolder}",
           "environment": [],
