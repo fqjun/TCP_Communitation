@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   my_addr.sin_family = AF_INET;  //设置为IP通信
   my_addr.sin_addr.s_addr =
       INADDR_ANY;  //服务器IP地址--允许连接到所有本地地址上
-  my_addr.sin_port = htons(5699);  //服务器端口号
+  my_addr.sin_port = htons(5599);  //服务器端口号
 
   ///*创建服务器端套接字--IPv4协议，面向连接通信，TCP协议*/
   if ((server_sockfd = socket(PF_INET, SOCK_STREAM, 0)) < 0) {
@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
     perror("listen error");
     return 1;
   };
+  printf("Found client\n");
 
   sin_size_int = sizeof(struct sockaddr_in); 
   sin_size = sin_size_int;
@@ -60,7 +61,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
   printf("accept client %s/n", inet_ntoa(remote_addr.sin_addr));
-  len = send(client_sockfd, "Welcome to my server/n", 21,0);  //发送欢迎信息
+  len = send(client_sockfd, "Welcome to my server", 21,0);  //发送欢迎信息
 
   /*接收客户端的数据并将其发送给客户端--recv返回接收到的字节数，send返回发送的字节数*/
   while ((len = recv(client_sockfd, buf, BUFSIZ, 0)) > 0) {
