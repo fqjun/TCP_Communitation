@@ -2,15 +2,40 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
+#include <string>
 #include <sys/socket.h>
 #include <arpa/inet.h>
 #include <sys/fcntl.h>
+
+#define DEBUG 
+
+#ifdef DEBUG
+struct message_pack
+{
+  int num;
+  float age;
+  std::string message;
+  char buffer_char [1024];
+  message_pack(){
+    num = 0;
+    age = 0.f;
+    memset(buffer_char,0,sizeof(buffer_char));
+  }
+};
+#endif // DEBUG
+
 
 // 初始化服务端的监听端口。
 int initserver(int port);
 
 int main(int argc,char *argv[])
 {
+
+#ifdef DEBUG
+message_pack pack;
+// message_pack* pack_st = &pack;
+#endif // DEBUG
+
   if (argc != 2)
   {
     printf("usage: ./tcpselect port\n"); return -1;
@@ -89,8 +114,17 @@ int main(int argc,char *argv[])
         char buffer[1024];
         memset(buffer,0,sizeof(buffer));
 
+#ifdef DEBUG
+        // memset(pack.buffer_char,0,sizeof(pack.buffer_char));
+        memset(&pack,0,sizeof(pack));
+#endif // DEBUG
+
         // 读取客户端的数据。
+        #ifdef DEBUG
+        ssize_t isize = read(eventfd,&pack,sizeof(pack));
+        #elif
         ssize_t isize=read(eventfd,buffer,sizeof(buffer));
+        #endif // DEBUG
 
         // 发生了错误或socket被对方关闭。
         if (isize <=0)
@@ -117,11 +151,19 @@ int main(int argc,char *argv[])
 
           continue;
         }
-
+#ifdef DEBUG
+        printf("recv(eventfd=%d,size=%d):\n num=%d\n,age=%f\n,message=%s\n,buff_char=%s\n",eventfd,isize,pack.num,pack.age,pack.message.c_str(),pack.buffer_char);
+#elif
         printf("recv(eventfd=%d,size=%d):%s\n",eventfd,isize,buffer);
+#endif // DEBUG
 
+#ifdef DEBUG
+        // 把收到的报文发回给客户端。
+        write(eventfd,&pack,sizeof(pack));
+#elif
         // 把收到的报文发回给客户端。
         write(eventfd,buffer,strlen(buffer));
+#endif // DEBUG
       }
     }
   }
