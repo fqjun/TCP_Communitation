@@ -57,8 +57,11 @@ int main(int argc,char *argv[])
     // 检查有事情发生的socket，包括监听和客户端连接的socket。
     // 这里是客户端的socket事件，每次都要遍历整个集合，因为可能有多个socket有事件。
     for (int eventfd=0; eventfd <= maxfd; eventfd++)
-    {
-      if (FD_ISSET(eventfd,&tmpfdset)<=0) continue;
+    { 
+      int fd_isset = FD_ISSET(eventfd,&tmpfdset);
+      if (/* FD_ISSET(eventfd,&tmpfdset) */fd_isset<=0) {
+        continue;
+      }
 
       if (eventfd==listensock)
       { 
@@ -135,25 +138,29 @@ int initserver(int port)
     printf("socket() failed.\n"); return -1;
   }
 
-  // Linux如下
+  // socket check socket 检查
   int opt = 1; unsigned int len = sizeof(opt);
   setsockopt(sock,SOL_SOCKET,SO_REUSEADDR,&opt,len);
   setsockopt(sock,SOL_SOCKET,SO_KEEPALIVE,&opt,len);
 
+  // 添加服务端的地址族信息
   struct sockaddr_in servaddr;
   servaddr.sin_family = AF_INET;
   servaddr.sin_addr.s_addr = htonl(INADDR_ANY);
   servaddr.sin_port = htons(port);
 
+  // 将服务端地址族信息与 socket 文件描述符进行绑定，并进行检查
   if (bind(sock,(struct sockaddr *)&servaddr,sizeof(servaddr)) < 0 )
   {
     printf("bind() failed.\n"); close(sock); return -1;
   }
 
+  // 阻塞等待客户端的链接
   if (listen(sock,5) != 0 )
   {
     printf("listen() failed.\n"); close(sock); return -1;
   }
 
+  // 返回文件描述符
   return sock;
 }
