@@ -12,12 +12,18 @@
 
 
 				"-I","${workspaceFolder}/",
+				"-I","/usr/local/include/opencv4/",
+        "-I","/usr/local/include/opencv4/opencv2/",
+				"-I","/usr/local/include/",
+				"-I","${workspaceFolder}/tcp_server",
 
 				"-g",
-        "${file}",
+        "${workspaceFolder}/main_server.cpp",
+				"${workspaceFolder}/tcp_server/tcp_server.cpp",
 
 				"-o",
 				"${workspaceFolder}/bin/run.o",//输出的文件名称以及路径
+				"/usr/local/lib/libopencv_*",
 
 			],
 			"options": {
