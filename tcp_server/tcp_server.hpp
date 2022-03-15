@@ -21,14 +21,15 @@
 
 namespace network_com {
 struct message_pack {
-  int num;
-  float age;
-  char buffer_char[1024];
-  message_pack() {
-    num = 0;
-    age = 0.f;
-    memset(buffer_char, 0, sizeof(buffer_char));
-  }
+	uint8_t 	color;
+	uint8_t 	robor_id;
+  uint8_t 	gimbal_mode;
+	float		  shootspeed;
+	float     gyro_yawAngle;
+	float     gyro_pitchAngle;
+	float     gyro_yawSpeed;
+	float     gyro_pitchSpeed;
+
 };
 
 // 数据传输协议

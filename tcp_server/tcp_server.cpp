@@ -166,11 +166,16 @@ int tcp_com::recvData() {
 
         continue;
       }
+      
+      printf("recv(eventfd=%d,size=%d): color=%d\n", eventfd, isize, pack.color);
+      printf("recv(eventfd=%d,size=%d): robor_id=%d\n", eventfd, isize, pack.robor_id);
+      printf("recv(eventfd=%d,size=%d): gimbal_mode=%d\n", eventfd, isize, pack.gimbal_mode);
 
-      printf("recv(eventfd=%d,size=%d): num=%d\n", eventfd, isize, pack.num);
-      printf("recv(eventfd=%d,size=%d): age=%f\n", eventfd, isize, pack.age);
-      printf("recv(eventfd=%d,size=%d): buffer_char=%s \n", eventfd, isize,
-             pack.buffer_char);
+      printf("recv(eventfd=%d,size=%d): shootspeed=%f\n", eventfd, isize, pack.shootspeed);
+      printf("recv(eventfd=%d,size=%d): gyro_yawAngle=%f\n", eventfd, isize, pack.gyro_yawAngle);
+      printf("recv(eventfd=%d,size=%d): gyro_pitchAngle=%f\n", eventfd, isize, pack.gyro_pitchAngle);
+      printf("recv(eventfd=%d,size=%d): gyro_yawSpeed=%f\n", eventfd, isize, pack.gyro_yawSpeed);
+      printf("recv(eventfd=%d,size=%d): gyro_pitchSpeed=%f\n", eventfd, isize, pack.gyro_pitchSpeed);
 
       // 把收到的报文发回给客户端。
       // write(eventfd,&pack,sizeof(pack));
